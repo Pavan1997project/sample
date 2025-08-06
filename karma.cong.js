@@ -30,11 +30,6 @@ module.exports = function (config) {
     autoWatch: true,
     browsers: ['ChromeHeadless'],
     singleRun: false,
-    restartOnFileChange: true,
-    // Ensures polyfills.ts and main entrypoints are loaded in the right order
-    files: [
-      { pattern: './src/polyfills.ts', included: true, watched: true },  // ensures Zone.js and polyfills loaded
-      { pattern: './src/test.ts', included: true, watched: true }
-    ]
+    restartOnFileChange: true
   });
 };
