@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 env:
-  AZURE_WEBAPP_NAME: testsampleangular
+  AZURE_WEBAPP_NAME: testsampleangular   # Your Azure Web App name
   NODE_VERSION: '20'
 
 jobs:
@@ -33,7 +33,7 @@ jobs:
       # Add a web.config to disable caching for index.html
       - name: Add no-cache web.config
         run: |
-          cat << 'EOF' > dist/login-app/browser/web.config
+          cat << 'EOF' > dist/login-app/web.config
           <configuration>
             <system.webServer>
               <staticContent>
@@ -47,7 +47,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: angular-build
-          path: dist/login-app/browser/*
+          path: dist/login-app/*
 
   deploy:
     needs: build-and-test
