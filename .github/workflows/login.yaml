@@ -30,11 +30,24 @@ jobs:
       - name: Build Angular app
         run: npm run build -- --configuration production
 
+      # Add a web.config to disable caching for index.html
+      - name: Add no-cache web.config
+        run: |
+          cat << 'EOF' > dist/login-app/browser/web.config
+          <configuration>
+            <system.webServer>
+              <staticContent>
+                <clientCache cacheControlMode="UseMaxAge" cacheControlMaxAge="0.00:00:01" />
+              </staticContent>
+            </system.webServer>
+          </configuration>
+          EOF
+
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
           name: angular-build
-          path: dist/login-app/browser/*   # Upload the contents inside browser folder
+          path: dist/login-app/browser/*
 
   deploy:
     needs: build-and-test
@@ -43,9 +56,6 @@ jobs:
       name: Production
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
       - name: Download build artifacts
         uses: actions/download-artifact@v4
         with:
