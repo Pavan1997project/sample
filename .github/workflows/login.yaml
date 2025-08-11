@@ -32,9 +32,10 @@ jobs:
       - name: Build Angular app
         run: npm run build -- --configuration production
 
+      # Add no-cache web.config to prevent browser from caching index.html
       - name: Add no-cache web.config
         run: |
-          cat << 'EOF' > dist/login-app/web.config
+          cat << 'EOF' > dist/login-app/browser/web.config
           <configuration>
             <system.webServer>
               <staticContent>
@@ -49,4 +50,4 @@ jobs:
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: dist/login-app
+          package: dist/login-app/browser
