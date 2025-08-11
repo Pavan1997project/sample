@@ -34,7 +34,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: angular-build
-          path: dist/login-app  
+          path: dist/login-app/*   # Upload contents of the folder, not the folder itself
 
   deploy:
     needs: build-and-test
@@ -50,7 +50,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: angular-build
-          path: ./build  # Download into a known temp folder
+          path: ./build  # Downloads the files here
 
       - name: Zip build output
         run: |
