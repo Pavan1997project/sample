@@ -1,17 +1,16 @@
-name: CI & Deploy Angular App
+name: Build and Deploy Angular App to Azure Web App
 
 on:
   push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+    branches:
+      - main
 
 env:
-  AZURE_WEBAPP_NAME: testsampleangular
-  NODE_VERSION: '20'
+  AZURE_WEBAPP_NAME: testsampleangular  # Name of your Azure Web App
+  NODE_VERSION: '20'                    # Node.js version
 
 jobs:
-  build-and-test:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -30,46 +29,9 @@ jobs:
       - name: Build Angular app
         run: npm run build -- --configuration production
 
-      # Add a web.config to disable caching for index.html
-      - name: Add no-cache web.config
-        run: |
-          cat << 'EOF' > dist/login-app/browser/web.config
-          <configuration>
-            <system.webServer>
-              <staticContent>
-                <clientCache cacheControlMode="UseMaxAge" cacheControlMaxAge="0.00:00:01" />
-              </staticContent>
-            </system.webServer>
-          </configuration>
-          EOF
-
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: angular-build
-          path: dist/login-app/browser/*
-
-  deploy:
-    needs: build-and-test
-    runs-on: ubuntu-latest
-    environment:
-      name: Production
-
-    steps:
-      - name: Download build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: angular-build
-          path: ./build
-
-      - name: Zip build output
-        run: |
-          cd build
-          zip -r ../deploy.zip .
-
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: deploy.zip
+          package: dist/login-app
