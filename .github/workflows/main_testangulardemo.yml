@@ -11,8 +11,8 @@ on:
 
 env:
   NODE_VERSION: '20.x'
-  APP_NAME: 'testangulardemo'   # Azure Web App name
-  DIST_FOLDER: 'dist/login-app/browser'  # Angular build output folder
+  APP_NAME: 'testangulardemo'
+  DIST_FOLDER: 'dist/login-app/browser'
 
 jobs:
   build:
@@ -35,7 +35,7 @@ jobs:
       - name: Build Angular app
         run: npm run build -- --configuration production
 
-      - name: Upload artifact for deployment
+      - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: angular-app
@@ -55,12 +55,12 @@ jobs:
           name: angular-app
           path: .
 
-      - name: Login to Azure
+      - name: Azure Login (OIDC)
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_1888549D6293444F9D597CCC036FB8A2 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_136CD78F6B044CB6935DD87BA36B6F33 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_95297BBDE71746D1987E4FA35AFAA224 }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID }}
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
